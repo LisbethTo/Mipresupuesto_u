@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f7f2" />
+  <title>Mi Presupuesto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Mi Presupuesto, inicio">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>mi<span class="brand-light">presupuesto</span></span>
+      </a>
+      <div class="top-date"><span class="date-dot"></span><span id="today-label"></span></div>
+    </header>
+
+    <main>
+      <section class="welcome-row">
+        <div><p class="eyebrow">TU DINERO, EN ORDEN</p><h1>Hola, ¿cómo van tus finanzas?</h1></div>
+        <button class="button button-light" id="budget-edit-open" type="button"><span class="pencil-icon">✎</span> Editar presupuesto</button>
+      </section>
+
+      <section class="overview" aria-label="Resumen del presupuesto">
+        <article class="balance-card">
+          <div class="balance-top"><span>Disponible este mes</span><span class="wallet-icon">↗</span></div>
+          <div class="balance-number" id="available-value">$ 0</div>
+          <div class="progress-meta"><span id="spent-percent">0% utilizado</span><span id="budget-cap-label">de $ 0</span></div>
+          <div class="progress-track"><div id="budget-progress" class="progress-fill"></div></div>
+          <p class="budget-alert" id="budget-alert" aria-live="polite"></p>
+        </article>
+        <article class="stat-card budget-stat"><div class="stat-icon mint">⌂</div><div class="stat-label">Presupuesto mensual</div><div class="stat-value" id="budget-value">$ 0</div><div class="stat-note">Tu límite para este mes</div></article>
+        <article class="stat-card spent-stat"><div class="stat-icon peach">↘</div><div class="stat-label">Gastos registrados</div><div class="stat-value" id="spent-value">$ 0</div><div class="stat-note" id="count-label">0 movimientos este mes</div></article>
+      </section>
+
+      <section class="content-grid">
+        <div class="left-column">
+          <section class="panel expense-panel">
+            <div class="panel-heading"><div><p class="eyebrow">REGISTRO</p><h2 id="form-title">Anota un gasto</h2></div><span class="heading-icon">＋</span></div>
+            <form id="expense-form" novalidate>
+              <div class="field"><label for="expense-description">¿En qué gastaste?</label><input id="expense-description" name="description" type="text" placeholder="Ej. Almuerzo con amigos" maxlength="60" required /></div>
+              <div class="form-two">
+                <div class="field"><label for="expense-amount">¿Cuánto?</label><div class="money-input"><span>$</span><input id="expense-amount" name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="15.000" required /></div><small>Pesos colombianos (COP)</small></div>
+                <div class="field"><label for="expense-date">Fecha</label><input id="expense-date" name="date" type="date" required /></div>
+              </div>
+              <div class="field"><label for="expense-category">Categoría</label><select id="expense-category" name="category" required><option value="" disabled selected>Elige una categoría</option><option value="Alimentación">🍽️ &nbsp; Alimentación</option><option value="Transporte">🚌 &nbsp; Transporte</option><option value="Educación">📚 &nbsp; Educación</option><option value="Entretenimiento">🎧 &nbsp; Entretenimiento</option><option value="Compras">🛍️ &nbsp; Compras</option><option value="Otros">✨ &nbsp; Otros</option></select></div>
+              <div class="form-actions"><button class="button button-primary" id="submit-expense" type="submit">Guardar gasto <span>↗</span></button><button class="cancel-edit" id="cancel-edit" type="button" hidden>Cancelar</button></div>
+              <p class="form-message" id="form-message" aria-live="polite"></p>
+            </form>
+          </section>
+          <section class="panel chart-panel">
+            <div class="panel-heading chart-heading"><div><p class="eyebrow">A DÓNDE VA</p><h2>Gastos por categoría</h2></div><span class="chart-period">Este mes</span></div>
+            <div id="category-chart" class="category-chart"></div>
+          </section>
+        </div>
+
+        <section class="panel history-panel">
+          <div class="panel-heading history-heading"><div><p class="eyebrow">TU ACTIVIDAD</p><h2>Historial de gastos</h2></div><span id="history-count" class="history-count">0</span></div>
+          <div class="filters">
+            <label class="filter-field"><span>Desde</span><input id="filter-from" type="date" aria-label="Filtrar desde fecha" /></label>
+            <label class="filter-field"><span>Hasta</span><input id="filter-to" type="date" aria-label="Filtrar hasta fecha" /></label>
+            <label class="filter-field category-filter"><span>Categoría</span><select id="filter-category" aria-label="Filtrar por categoría"><option value="">Todas</option><option>Alimentación</option><option>Transporte</option><option>Educación</option><option>Entretenimiento</option><option>Compras</option><option>Otros</option></select></label>
+          </div>
+          <div id="expense-list" class="expense-list"></div>
+          <div id="empty-state" class="empty-state"><span class="empty-illustration">✳</span><strong>Aún no hay gastos</strong><span>Cuando registres uno, aparecerá aquí.</span></div>
+        </section>
+      </section>
+    </main>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="budget-dialog" class="budget-dialog"><form id="budget-form"><button type="button" id="budget-close" class="dialog-close" aria-label="Cerrar">×</button><p class="eyebrow">PLANEACIÓN</p><h2>Tu presupuesto mensual</h2><p class="dialog-copy">Define cuánto dinero tienes para este mes.</p><label for="budget-amount">Monto en pesos colombianos</label><div class="money-input dialog-money"><span>$</span><input id="budget-amount" type="number" min="1" step="1" inputmode="numeric" required placeholder="500.000" /></div><div class="dialog-actions"><button class="button button-primary" type="submit">Guardar presupuesto</button></div></form></dialog>
+    <dialog id="delete-dialog" class="budget-dialog delete-dialog"><form method="dialog"><button type="button" id="delete-close" class="dialog-close" aria-label="Cerrar">×</button><div class="delete-mark">!</div><h2>¿Eliminar este gasto?</h2><p class="dialog-copy">El saldo disponible se actualizará automáticamente.</p><div class="dialog-actions"><button class="button button-light" value="cancel">No, volver</button><button class="button button-danger" id="confirm-delete" type="button">Sí, eliminar</button></div></form></dialog>
+  </div>
+</body>
+</html>
